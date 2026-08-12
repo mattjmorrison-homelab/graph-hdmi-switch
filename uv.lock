@@ -122,6 +122,8 @@ dependencies = [
 dev = [
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "pytest-ruff" },
+    { name = "pytest-ty" },
     { name = "ruff" },
     { name = "ty" },
 ]
@@ -133,6 +135,8 @@ requires-dist = [{ name = "pyserial", specifier = ">=3.5" }]
 dev = [
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "pytest-cov", specifier = ">=7.1.0" },
+    { name = "pytest-ruff", specifier = ">=0.5" },
+    { name = "pytest-ty", specifier = ">=0.2.1" },
     { name = "ruff", specifier = ">=0.16.2" },
     { name = "ty", specifier = ">=0.0.70" },
 ]
@@ -210,6 +214,32 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b1/51/a849f96e117386044471c8ec2bd6cfebacda285da9525c9106aeb28da671/pytest_cov-7.1.0.tar.gz", hash = "sha256:30674f2b5f6351aa09702a9c8c364f6a01c27aae0c1366ae8016160d1efc56b2", size = 55592, upload-time = "2026-03-21T20:11:16.284Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9d/7a/d968e294073affff457b041c2be9868a40c1c71f4a35fcc1e45e5493067b/pytest_cov-7.1.0-py3-none-any.whl", hash = "sha256:a0461110b7865f9a271aa1b51e516c9a95de9d696734a2f71e3e78f46e1d4678", size = 22876, upload-time = "2026-03-21T20:11:14.438Z" },
+]
+
+[[package]]
+name = "pytest-ruff"
+version = "0.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+    { name = "ruff" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/32/5a/bee55130757fb4a14e0ac5d2c6558323275b5dccfa2f5353f3893299ff7d/pytest_ruff-0.5.tar.gz", hash = "sha256:f611c780fc2b9b8d7041fa0e7589f0a9f352b288d0cfc330881101b35d382063", size = 3854, upload-time = "2025-06-19T07:26:24.607Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1d/ca/abfce6de0bb0f017ed05ef9f2330596235cc5a3341b4d8d40895682b3814/pytest_ruff-0.5-py3-none-any.whl", hash = "sha256:d9db170d86fb167008e6702b4d79e2cccd8287f069c3a57f9261831cebdc4a31", size = 4680, upload-time = "2025-06-19T07:26:23.897Z" },
+]
+
+[[package]]
+name = "pytest-ty"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+    { name = "ty" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8b/bd/a00f4d319b7ea589db54c9fb85a3e2cf5a8b99a1e54667dc5286d173c027/pytest_ty-0.2.1.tar.gz", hash = "sha256:0fd21b17ae68812834bf647b9cfb18527488aefa853bd912aeff6690b14cb154", size = 3986, upload-time = "2026-04-24T15:39:06.405Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/20/f8/81dd52484f8e0598ae4e7cda4f6f17c9cac038de94814dea1f8f16b28108/pytest_ty-0.2.1-py3-none-any.whl", hash = "sha256:3f65aba1ba560dc936c6007ab03bf4448c27c22834b9689862f2b431cb07b979", size = 5005, upload-time = "2026-04-24T15:39:07.186Z" },
 ]
 
 [[package]]

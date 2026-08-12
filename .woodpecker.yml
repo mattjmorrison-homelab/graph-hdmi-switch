@@ -1,0 +1,8 @@
+steps:
+  test-zot-auth:
+    image: curlimages/curl
+    environment:
+      ZOT_PASSWORD:
+        from_secret: zot_password
+    commands:
+      - curl -sf -u "ci:$ZOT_PASSWORD" https://registry.morrisons.site/v2/_catalog

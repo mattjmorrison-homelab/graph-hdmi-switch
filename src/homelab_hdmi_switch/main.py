@@ -1,6 +1,6 @@
-
 import serial
 
-def main() -> None:
+
+def main() -> str:
     print(serial)
-    return 'hello'
+    return "hello"

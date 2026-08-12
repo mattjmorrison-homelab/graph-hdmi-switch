@@ -13,3 +13,9 @@ FROM runtime AS test
 RUN uv sync --frozen
 COPY tests ./tests
 ENTRYPOINT ["uv", "run", "pytest"]
+
+FROM test AS ruff
+ENTRYPOINT ["uv", "run", "ruff"]
+
+FROM test AS ty
+ENTRYPOINT ["uv", "run", "ty"]
