@@ -1,0 +1,27 @@
+[project]
+name = "homelab-hdmi-switch"
+version = "0.1.0"
+description = "Simple Controller for TESMart HDMI Switch"
+readme = "README.md"
+authors = [
+    { name = "Matthew J. Morrison", email = "mattjmorrison@mattjmorrison.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pyserial>=3.5",
+]
+
+[project.scripts]
+homelab-hdmi-switch = "homelab_hdmi_switch.main:main"
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.2",
+    "ty>=0.0.70",
+]
