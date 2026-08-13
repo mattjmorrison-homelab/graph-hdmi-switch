@@ -5,7 +5,7 @@ steps:
   build-test:
     image: docker.io/woodpeckerci/plugin-kaniko:latest@sha256:01e0e325efd8fd2b1a95d207e84780a85ed7f8eb9712d8e79888e0f42ff8b7b3
     settings:
-      repo: registry.morrisons.site/homelab-hdmi-switch-test
+      repo: homelab-hdmi-switch-test
       registry: registry.morrisons.site
       dockerfile: Dockerfile
       target: test
@@ -22,7 +22,7 @@ steps:
   build-release:
     image: docker.io/woodpeckerci/plugin-kaniko:latest@sha256:01e0e325efd8fd2b1a95d207e84780a85ed7f8eb9712d8e79888e0f42ff8b7b3
     settings:
-      repo: registry.morrisons.site/homelab-hdmi-switch
+      repo: homelab-hdmi-switch
       registry: registry.morrisons.site
       dockerfile: Dockerfile
       target: release
