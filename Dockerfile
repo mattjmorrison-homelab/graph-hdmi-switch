@@ -7,7 +7,8 @@ COPY src ./src
 
 FROM base AS release
 RUN uv sync --frozen --no-dev
-ENTRYPOINT ["uv", "run", "homelab-hdmi-switch"]
+EXPOSE 8000
+ENTRYPOINT ["uv", "run", "gunicorn", "homelab_hdmi_switch.wsgi:app", "--bind", "0.0.0.0:8000"]
 
 FROM release AS test
 RUN uv sync --frozen

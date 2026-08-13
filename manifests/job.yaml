@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: homelab-hdmi-switch
+  namespace: hdmi-switch
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      serviceAccountName: hdmi-switch
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: hdmi-switch-zot-pull-secret
+      containers:
+        - name: homelab-hdmi-switch
+          image: registry.morrisons.site/homelab-hdmi-switch:7db7860758a9b5c71b1b8cb7024cf5ce9e1797fd
