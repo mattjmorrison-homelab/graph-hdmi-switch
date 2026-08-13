@@ -5,4 +5,4 @@ steps:
       ZOT_PASSWORD:
         from_secret: zot_password
     commands:
-      - curl -sf -u "ci:$ZOT_PASSWORD" https://registry.morrisons.site/v2/_catalog
+      - curl -sf -D - -u "ci:$ZOT_PASSWORD" https://registry.morrisons.site/v2/_catalog
