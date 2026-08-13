@@ -29,7 +29,11 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--ruff --ruff-format --ty"
+addopts = "--ruff --ruff-format --ty --cov=homelab_hdmi_switch"
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
 
 [tool.ruff.lint]
 extend-select = ["ANN"]

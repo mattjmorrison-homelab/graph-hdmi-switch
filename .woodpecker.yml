@@ -1,13 +1,34 @@
-steps:
-  dns-check:
-    image: curlimages/curl
-    commands:
-      - nslookup registry.morrisons.site
+when:
+  event: [push, manual]
 
-  test-zot-auth:
-    image: curlimages/curl
-    environment:
-      ZOT_PASSWORD:
+steps:
+  build-test:
+    image: docker.io/woodpeckerci/plugin-kaniko:latest@sha256:01e0e325efd8fd2b1a95d207e84780a85ed7f8eb9712d8e79888e0f42ff8b7b3
+    settings:
+      repo: registry.morrisons.site/homelab-hdmi-switch-test
+      registry: registry.morrisons.site
+      dockerfile: Dockerfile
+      target: test
+      tags: ${CI_COMMIT_SHA}
+      username: ci
+      password:
         from_secret: zot_password
+
+  test:
+    image: registry.morrisons.site/homelab-hdmi-switch-test:${CI_COMMIT_SHA}
     commands:
-      - curl -sf -D - -u "ci:$ZOT_PASSWORD" https://registry.morrisons.site/v2/_catalog
+      - uv run pytest
+
+  build-release:
+    image: docker.io/woodpeckerci/plugin-kaniko:latest@sha256:01e0e325efd8fd2b1a95d207e84780a85ed7f8eb9712d8e79888e0f42ff8b7b3
+    settings:
+      repo: registry.morrisons.site/homelab-hdmi-switch
+      registry: registry.morrisons.site
+      dockerfile: Dockerfile
+      target: release
+      tags: ${CI_COMMIT_SHA}
+      username: ci
+      password:
+        from_secret: zot_password
+    when:
+      branch: main
