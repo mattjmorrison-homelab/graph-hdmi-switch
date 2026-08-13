@@ -1,8 +1,13 @@
 steps:
+  dns-check:
+    image: curlimages/curl
+    commands:
+      - nslookup registry.morrisons.site
+
   test-zot-auth:
     image: curlimages/curl
     environment:
       ZOT_PASSWORD:
         from_secret: zot_password
     commands:
-      - curl -sf -D - -u "ci:$ZOT_PASSWORD" https://registry.morrisons.site/v2/_catalog
+      - curl -sf -D - -u "ci:$ZOT_PASSWORD" http://zot.zot.svc.cluster.local:5000/v2/_catalog
