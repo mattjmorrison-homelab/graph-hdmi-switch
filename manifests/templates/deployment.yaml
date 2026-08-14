@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hdmi-switch
+  namespace: hdmi-switch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hdmi-switch
+  template:
+    metadata:
+      labels:
+        app: hdmi-switch
+    spec:
+      serviceAccountName: hdmi-switch
+      imagePullSecrets:
+        - name: hdmi-switch-zot-pull-secret
+      containers:
+        - name: hdmi-switch
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 8000
