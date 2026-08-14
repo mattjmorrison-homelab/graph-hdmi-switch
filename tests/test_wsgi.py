@@ -21,5 +21,5 @@ def test_app_returns_hello_world_json() -> None:
     body = app({}, start_response)
 
     assert captured_status == "200 OK"
-    assert b"".join(body) == json.dumps({"Hello - 2": "World - 2"}).encode("utf-8")
+    assert b"".join(body) == json.dumps({"Hello - 3": "World - 3"}).encode("utf-8")
     assert ("Content-Type", "application/json") in captured_headers
