@@ -43,7 +43,9 @@ def test_logo_route_returns_png_image() -> None:
     environ = {"PATH_INFO": "/logo", "REQUEST_METHOD": "GET"}
     body = app(environ, start_response)
 
-    logo_path = Path(__file__).parent.parent / "src" / "homelab_hdmi_switch" / "logo.png"
+    logo_path = (
+        Path(__file__).parent.parent / "src" / "homelab_hdmi_switch" / "logo.png"
+    )
     assert captured_status == "200 OK"
     assert b"".join(body) == logo_path.read_bytes()
     assert ("Content-Type", "image/png") in captured_headers
