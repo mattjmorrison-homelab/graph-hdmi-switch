@@ -6,6 +6,8 @@ COPY pyproject.toml uv.lock README.md ./
 COPY src ./src
 
 FROM base AS release
+ARG COMMIT_SHA
+ENV COMMIT_SHA=$COMMIT_SHA
 RUN uv sync --frozen --no-dev
 EXPOSE 8000
 ENTRYPOINT ["uv", "run", "gunicorn", "homelab_hdmi_switch.wsgi:app", "--bind", "0.0.0.0:8000"]

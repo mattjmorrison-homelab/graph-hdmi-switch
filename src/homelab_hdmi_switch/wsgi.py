@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 from wsgiref.types import StartResponse, WSGIEnvironment
 
@@ -39,6 +40,11 @@ def app(environ: WSGIEnvironment, start_response: StartResponse) -> list[bytes]:
         and environ.get("REQUEST_METHOD") == "POST"
     ):
         body = _handle_graphql_request(environ)
+        headers = [("Content-Type", "application/json")]
+    elif environ.get("PATH_INFO") == "/version":
+        # Woodpecker CI polls this endpoint post-deploy to confirm the live pod is running the built commit
+        commit_sha = os.environ.get("COMMIT_SHA", "unknown")
+        body = json.dumps({"commit_sha": commit_sha}).encode("utf-8")
         headers = [("Content-Type", "application/json")]
     else:
         body = json.dumps({"Hello - 3": "World - 3"}).encode("utf-8")

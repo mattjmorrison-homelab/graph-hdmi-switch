@@ -1,5 +1,6 @@
 import io
 import json
+import os
 from collections.abc import Callable
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -173,3 +174,15 @@ def test_graphql_route_returns_errors_for_nonexistent_field() -> None:
     assert len(parsed["errors"]) > 0
     for entry in parsed["errors"]:
         assert isinstance(entry, str)
+
+
+def test_version_route_returns_commit_sha_from_env() -> None:
+    start_response, captured = _capturing_start_response()
+
+    environ = {"PATH_INFO": "/version", "REQUEST_METHOD": "GET"}
+    with patch.dict(os.environ, {"COMMIT_SHA": "abc1234"}):
+        body = app(environ, start_response)
+
+    assert captured.status == "200 OK"
+    assert json.loads(b"".join(body)) == {"commit_sha": "abc1234"}
+    assert ("Content-Type", "application/json") in captured.headers

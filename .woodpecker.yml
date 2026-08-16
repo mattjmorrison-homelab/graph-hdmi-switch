@@ -27,8 +27,17 @@ steps:
       dockerfile: Dockerfile
       target: release
       tags: ${CI_COMMIT_SHA}
+      build_args:
+        - COMMIT_SHA=${CI_COMMIT_SHA}
       username: ci
       password:
         from_secret: zot_password
+    when:
+      branch: main
+
+  verify-deploy:
+    image: alpine@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
+    commands:
+      - sh scripts/verify-deploy.sh
     when:
       branch: main
