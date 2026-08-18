@@ -1,6 +1,24 @@
 when:
   event: [push, manual]
 
+# All steps in a pipeline share one workspace volume (local-path storage,
+# which is node-local — it binds to whichever node first mounts it). Since
+# every other step here is pinned to arm64, the clone step must be too, or
+# the workspace volume binds to the default amd64 node and no later step
+# can ever mount it.
+clone:
+  - name: git
+    image: woodpeckerci/plugin-git
+    backend_options:
+      kubernetes:
+        nodeSelector:
+          kubernetes.io/arch: arm64
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: pi
+            effect: NoSchedule
+
 steps:
   build-test:
     image: docker.io/woodpeckerci/plugin-kaniko:latest@sha256:01e0e325efd8fd2b1a95d207e84780a85ed7f8eb9712d8e79888e0f42ff8b7b3
@@ -72,3 +90,14 @@ steps:
       - sh scripts/verify-deploy.sh
     when:
       branch: main
+    # Reads scripts/verify-deploy.sh from the shared workspace volume, which
+    # is arm64-pinned (see the clone step above) — must match to mount it.
+    backend_options:
+      kubernetes:
+        nodeSelector:
+          kubernetes.io/arch: arm64
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: pi
+            effect: NoSchedule
