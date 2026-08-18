@@ -134,7 +134,7 @@ def test_graphql_route_surfaces_switch_communication_error() -> None:
     assert captured.status == "200 OK"
     parsed = json.loads(b"".join(body))
     assert parsed["data"] is None
-    assert any("device unreachable" in error for error in parsed["errors"])
+    assert any("device unreachable" in error["message"] for error in parsed["errors"])
 
 
 def test_graphql_route_passes_variables_to_execute_sync() -> None:
@@ -163,7 +163,8 @@ def test_graphql_route_returns_errors_for_invalid_query() -> None:
     assert isinstance(parsed["errors"], list)
     assert len(parsed["errors"]) > 0
     for entry in parsed["errors"]:
-        assert isinstance(entry, str)
+        assert isinstance(entry, dict)
+        assert isinstance(entry["message"], str)
 
 
 def test_graphql_service_sdl_query_returns_federation_sdl() -> None:
@@ -196,7 +197,9 @@ def test_graphql_route_returns_errors_for_invalid_json_body() -> None:
     body = app(_graphql_environ(request_body), start_response)
 
     assert captured.status == "200 OK"
-    assert json.loads(b"".join(body)) == {"errors": ["invalid JSON body"]}
+    assert json.loads(b"".join(body)) == {
+        "errors": [{"message": "invalid JSON body"}]
+    }
 
 
 def test_graphql_route_returns_errors_for_nonexistent_field() -> None:
@@ -211,7 +214,8 @@ def test_graphql_route_returns_errors_for_nonexistent_field() -> None:
     assert isinstance(parsed["errors"], list)
     assert len(parsed["errors"]) > 0
     for entry in parsed["errors"]:
-        assert isinstance(entry, str)
+        assert isinstance(entry, dict)
+        assert isinstance(entry["message"], str)
 
 
 def test_version_route_returns_commit_sha_from_env() -> None:
