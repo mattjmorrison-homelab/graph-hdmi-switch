@@ -1,5 +1,7 @@
-FROM python:3.12-slim-bookworm@sha256:4766d8b510c428e595d74b9cc5bbb2fae8e26316fffb4adc89908d79aacd58a2 AS base
-COPY --from=ghcr.io/astral-sh/uv:latest@sha256:2d890623d310b57771ce840f0da5eed5fc6d657da05ffaa45d82797b53fa3abc /uv /uvx /bin/
+FROM python:3.12-slim-bookworm@sha256:fa161ca9d626b475d504c439b943e295fbca9e2560b1be14654ade60e7d8d45a AS base
+# arm64 digests — this image is deployed to pi5-8 (a Raspberry Pi) for
+# physical serial access to the switch, not a generic/amd64 target.
+COPY --from=ghcr.io/astral-sh/uv:latest@sha256:8ba8ac26ed7be9ce3f0fbd510f8d26a3fb9b19056efe6c08433baf9762129edd /uv /uvx /bin/
 WORKDIR /app
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 COPY pyproject.toml uv.lock README.md ./
