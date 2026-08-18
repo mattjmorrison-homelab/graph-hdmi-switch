@@ -20,6 +20,11 @@ steps:
       kubernetes:
         nodeSelector:
           kubernetes.io/arch: arm64
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: pi
+            effect: NoSchedule
 
   test:
     image: registry.morrisons.site/homelab-hdmi-switch-test:${CI_COMMIT_SHA}
@@ -30,6 +35,11 @@ steps:
       kubernetes:
         nodeSelector:
           kubernetes.io/arch: arm64
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: pi
+            effect: NoSchedule
 
   build-release:
     image: docker.io/woodpeckerci/plugin-kaniko:latest@sha256:01e0e325efd8fd2b1a95d207e84780a85ed7f8eb9712d8e79888e0f42ff8b7b3
@@ -50,6 +60,11 @@ steps:
       kubernetes:
         nodeSelector:
           kubernetes.io/arch: arm64
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: pi
+            effect: NoSchedule
 
   verify-deploy:
     image: alpine@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
