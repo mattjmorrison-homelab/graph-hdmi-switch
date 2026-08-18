@@ -8,7 +8,7 @@ DEVICE = os.environ.get("HDMI_SWITCH_DEVICE", "/dev/ttyUSB0")
 BAUD_RATE = 9600
 _RESPONSE_SIZE = 8
 _RESPONSE_DELAY_SECONDS = 0.5
-_QUERY_COMMAND = b"\xAA\xBB\x03\x10\x00\xEE"
+_QUERY_COMMAND = b"\xaa\xbb\x03\x10\x00\xee"
 
 
 class SwitchCommunicationError(Exception):
@@ -24,7 +24,7 @@ class HdmiInputPort(Enum):
 
 
 def _set_input_command(port: HdmiInputPort) -> bytes:
-    return b"\xAA\xBB\x03\x01" + bytes([port.value]) + b"\xEE"
+    return b"\xaa\xbb\x03\x01" + bytes([port.value]) + b"\xee"
 
 
 def _send_command(command: bytes) -> HdmiInputPort:

@@ -27,9 +27,7 @@ def test_get_current_input_returns_current_port(
     result = get_current_input()
 
     assert result == HdmiInputPort.PS4
-    mock_serial.return_value.write.assert_called_once_with(
-        b"\xAA\xBB\x03\x10\x00\xEE"
-    )
+    mock_serial.return_value.write.assert_called_once_with(b"\xaa\xbb\x03\x10\x00\xee")
 
 
 @patch("homelab_hdmi_switch.switch.time.sleep")
@@ -42,9 +40,7 @@ def test_set_input_sends_command_and_returns_new_port(
     result = set_input(HdmiInputPort.APPLE_TV)
 
     assert result == HdmiInputPort.APPLE_TV
-    mock_serial.return_value.write.assert_called_once_with(
-        b"\xAA\xBB\x03\x01\x02\xEE"
-    )
+    mock_serial.return_value.write.assert_called_once_with(b"\xaa\xbb\x03\x01\x02\xee")
 
 
 @patch("homelab_hdmi_switch.switch.time.sleep")
