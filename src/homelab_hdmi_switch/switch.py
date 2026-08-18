@@ -6,7 +6,12 @@ import serial
 
 DEVICE = os.environ.get("HDMI_SWITCH_DEVICE", "/dev/ttyUSB0")
 BAUD_RATE = 9600
+# The switch's documented response frame is 8 bytes, but real devices have
+# been observed sending fewer (e.g. 6) — the only byte actually used is
+# index 4, so that's the real minimum, not the full frame size. The
+# original reference implementation never validated length at all.
 _RESPONSE_SIZE = 8
+_MIN_RESPONSE_SIZE = 5
 _RESPONSE_DELAY_SECONDS = 0.5
 _QUERY_COMMAND = b"\xaa\xbb\x03\x10\x00\xee"
 
@@ -38,9 +43,10 @@ def _send_command(command: bytes) -> HdmiInputPort:
             f"failed to communicate with switch at {DEVICE}: {exc}"
         ) from exc
 
-    if len(response) < _RESPONSE_SIZE:
+    if len(response) < _MIN_RESPONSE_SIZE:
         raise SwitchCommunicationError(
-            f"expected {_RESPONSE_SIZE} bytes from switch, got {len(response)}"
+            f"expected at least {_MIN_RESPONSE_SIZE} bytes from switch, "
+            f"got {len(response)}"
         )
     try:
         return HdmiInputPort(response[4] + 1)
