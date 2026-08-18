@@ -6,6 +6,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 from wsgiref.types import StartResponse, WSGIEnvironment
 
+from homelab_hdmi_switch.switch import HdmiInputPort, SwitchCommunicationError
 from homelab_hdmi_switch.wsgi import app
 
 
@@ -88,15 +89,52 @@ def test_logo_route_returns_png_image() -> None:
     assert ("Content-Type", "image/png") in captured_headers
 
 
-def test_graphql_route_returns_hello_query_result() -> None:
+def test_graphql_route_returns_current_input_query_result() -> None:
     start_response, captured = _capturing_start_response()
 
-    request_body = json.dumps({"query": "{ hello }"}).encode("utf-8")
-    body = app(_graphql_environ(request_body), start_response)
+    request_body = json.dumps({"query": "{ currentInput }"}).encode("utf-8")
+    with patch(
+        "homelab_hdmi_switch.schema.switch.get_current_input",
+        return_value=HdmiInputPort.PS4,
+    ):
+        body = app(_graphql_environ(request_body), start_response)
 
     assert captured.status == "200 OK"
-    assert json.loads(b"".join(body)) == {"data": {"hello": "Hello from hdmi-switch"}}
+    assert json.loads(b"".join(body)) == {"data": {"currentInput": "PS4"}}
     assert ("Content-Type", "application/json") in captured.headers
+
+
+def test_graphql_mutation_sets_input_and_returns_new_state() -> None:
+    start_response, captured = _capturing_start_response()
+
+    request_body = json.dumps(
+        {"query": "mutation { setInput(input: APPLE_TV) }"}
+    ).encode("utf-8")
+    with patch(
+        "homelab_hdmi_switch.schema.switch.set_input",
+        return_value=HdmiInputPort.APPLE_TV,
+    ) as mock_set_input:
+        body = app(_graphql_environ(request_body), start_response)
+
+    assert captured.status == "200 OK"
+    assert json.loads(b"".join(body)) == {"data": {"setInput": "APPLE_TV"}}
+    mock_set_input.assert_called_once_with(HdmiInputPort.APPLE_TV)
+
+
+def test_graphql_route_surfaces_switch_communication_error() -> None:
+    start_response, captured = _capturing_start_response()
+
+    request_body = json.dumps({"query": "{ currentInput }"}).encode("utf-8")
+    with patch(
+        "homelab_hdmi_switch.schema.switch.get_current_input",
+        side_effect=SwitchCommunicationError("device unreachable"),
+    ):
+        body = app(_graphql_environ(request_body), start_response)
+
+    assert captured.status == "200 OK"
+    parsed = json.loads(b"".join(body))
+    assert parsed["data"] is None
+    assert any("device unreachable" in error for error in parsed["errors"])
 
 
 def test_graphql_route_passes_variables_to_execute_sync() -> None:

@@ -4,7 +4,7 @@ set -eu
 apk add --no-cache curl >/dev/null
 
 for i in $(seq 1 10); do
-  ACTUAL=$(curl -sf https://hdmi-switch.morrisons.site/version | grep -o '"commit_sha":"[^"]*"' | cut -d'"' -f4)
+  ACTUAL=$(curl -sf https://graph-hdmi-switch.morrisons.site/version | grep -o '"commit_sha":"[^"]*"' | cut -d'"' -f4)
   if [ "$ACTUAL" = "$CI_COMMIT_SHA" ]; then
     echo "PASS: deployed commit_sha matches $CI_COMMIT_SHA"
     exit 0
