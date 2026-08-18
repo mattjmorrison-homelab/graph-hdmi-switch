@@ -197,9 +197,7 @@ def test_graphql_route_returns_errors_for_invalid_json_body() -> None:
     body = app(_graphql_environ(request_body), start_response)
 
     assert captured.status == "200 OK"
-    assert json.loads(b"".join(body)) == {
-        "errors": [{"message": "invalid JSON body"}]
-    }
+    assert json.loads(b"".join(body)) == {"errors": [{"message": "invalid JSON body"}]}
 
 
 def test_graphql_route_returns_errors_for_nonexistent_field() -> None:

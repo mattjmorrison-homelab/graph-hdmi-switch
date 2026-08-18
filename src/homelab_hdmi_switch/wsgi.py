@@ -20,9 +20,9 @@ def _handle_graphql_request(environ: WSGIEnvironment) -> bytes:
     try:
         payload = json.loads(request_body)
     except json.JSONDecodeError:
-        return json.dumps(
-            {"errors": [{"message": "invalid JSON body"}]}
-        ).encode("utf-8")
+        return json.dumps({"errors": [{"message": "invalid JSON body"}]}).encode(
+            "utf-8"
+        )
 
     result = schema.execute_sync(
         payload["query"], variable_values=payload.get("variables")
@@ -32,9 +32,7 @@ def _handle_graphql_request(environ: WSGIEnvironment) -> bytes:
         # GraphQL-over-HTTP requires each entry in `errors` to be an object
         # with a `message` key, not a bare string — Apollo Router rejects
         # subgraph responses that don't conform to this.
-        response_data["errors"] = [
-            {"message": str(error)} for error in result.errors
-        ]
+        response_data["errors"] = [{"message": str(error)} for error in result.errors]
     return json.dumps(response_data).encode("utf-8")
 
 
