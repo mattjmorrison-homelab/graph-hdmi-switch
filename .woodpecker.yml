@@ -23,7 +23,7 @@ steps:
   build-test:
     image: docker.io/woodpeckerci/plugin-kaniko:latest@sha256:01e0e325efd8fd2b1a95d207e84780a85ed7f8eb9712d8e79888e0f42ff8b7b3
     settings:
-      repo: homelab-hdmi-switch-test
+      repo: graph-hdmi-switch-test
       registry: registry.morrisons.site
       dockerfile: Dockerfile
       target: test
@@ -45,7 +45,7 @@ steps:
             effect: NoSchedule
 
   test:
-    image: registry.morrisons.site/homelab-hdmi-switch-test:${CI_COMMIT_SHA}
+    image: registry.morrisons.site/graph-hdmi-switch-test:${CI_COMMIT_SHA}
     commands:
       - uv run pytest
     # This image only contains arm64 binaries — must run on an arm64 node.
@@ -62,7 +62,7 @@ steps:
   build-release:
     image: docker.io/woodpeckerci/plugin-kaniko:latest@sha256:01e0e325efd8fd2b1a95d207e84780a85ed7f8eb9712d8e79888e0f42ff8b7b3
     settings:
-      repo: homelab-hdmi-switch
+      repo: graph-hdmi-switch
       registry: registry.morrisons.site
       dockerfile: Dockerfile
       target: release
