@@ -13,11 +13,23 @@ steps:
       username: ci
       password:
         from_secret: zot_password
+    # Dockerfile's base images are pinned to arm64 digests (this deploys to
+    # pi5-8, a Raspberry Pi). Kaniko can't cross-build/emulate, so the build
+    # itself must run natively on an arm64 node, not the default amd64 one.
+    backend_options:
+      kubernetes:
+        nodeSelector:
+          kubernetes.io/arch: arm64
 
   test:
     image: registry.morrisons.site/homelab-hdmi-switch-test:${CI_COMMIT_SHA}
     commands:
       - uv run pytest
+    # This image only contains arm64 binaries — must run on an arm64 node.
+    backend_options:
+      kubernetes:
+        nodeSelector:
+          kubernetes.io/arch: arm64
 
   build-release:
     image: docker.io/woodpeckerci/plugin-kaniko:latest@sha256:01e0e325efd8fd2b1a95d207e84780a85ed7f8eb9712d8e79888e0f42ff8b7b3
@@ -34,6 +46,10 @@ steps:
         from_secret: zot_password
     when:
       branch: main
+    backend_options:
+      kubernetes:
+        nodeSelector:
+          kubernetes.io/arch: arm64
 
   verify-deploy:
     image: alpine@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
