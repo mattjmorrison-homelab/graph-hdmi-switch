@@ -4,15 +4,35 @@
 import strawberry
 
 from homelab_hdmi_switch import switch
+from homelab_hdmi_switch.input_config import CONFIGURED_INPUTS
 
 HdmiInput = strawberry.enum(switch.HdmiInputPort, name="HdmiInput")
 
 
 @strawberry.type
+class Input:
+    value: HdmiInput
+    label: str
+    icon: str
+    hover_text: str
+    is_active: bool
+
+
+@strawberry.type
 class Query:
     @strawberry.field
-    def current_input(self) -> HdmiInput:
-        return switch.get_current_input()
+    def inputs(self) -> list[Input]:
+        current = switch.get_current_input()
+        return [
+            Input(
+                value=config.port,
+                label=config.label,
+                icon=config.icon,
+                hover_text=config.hover_text,
+                is_active=config.port == current,
+            )
+            for config in CONFIGURED_INPUTS
+        ]
 
 
 @strawberry.type

@@ -101,3 +101,17 @@ steps:
             operator: Equal
             value: pi
             effect: NoSchedule
+
+  notify-discord:
+    image: alpine@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
+    environment:
+      DISCORD_WEBHOOK_URL:
+        from_secret: discord_webhook_url
+    commands:
+      - apk add --no-cache curl
+      - >
+        curl -sf -H "Content-Type: application/json" -X POST
+        -d "{\"content\": \"🔴 **${CI_REPO}** build failed — pipeline #${CI_PIPELINE_NUMBER}, commit ${CI_COMMIT_SHA}\\n${CI_PIPELINE_URL}\"}"
+        "$DISCORD_WEBHOOK_URL"
+    when:
+      status: [failure]

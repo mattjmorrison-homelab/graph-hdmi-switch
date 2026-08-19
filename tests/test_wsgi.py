@@ -89,10 +89,12 @@ def test_logo_route_returns_png_image() -> None:
     assert ("Content-Type", "image/png") in captured_headers
 
 
-def test_graphql_route_returns_current_input_query_result() -> None:
+def test_graphql_route_returns_inputs_query_result() -> None:
     start_response, captured = _capturing_start_response()
 
-    request_body = json.dumps({"query": "{ currentInput }"}).encode("utf-8")
+    request_body = json.dumps(
+        {"query": "{ inputs { value label icon hoverText isActive } }"}
+    ).encode("utf-8")
     with patch(
         "homelab_hdmi_switch.schema.switch.get_current_input",
         return_value=HdmiInputPort.PS4,
@@ -100,7 +102,25 @@ def test_graphql_route_returns_current_input_query_result() -> None:
         body = app(_graphql_environ(request_body), start_response)
 
     assert captured.status == "200 OK"
-    assert json.loads(b"".join(body)) == {"data": {"currentInput": "PS4"}}
+    parsed = json.loads(b"".join(body))
+    inputs = parsed["data"]["inputs"]
+    assert [entry["value"] for entry in inputs] == [
+        "APPLE_TV",
+        "PC",
+        "SWITCH",
+        "PS3",
+        "PS4",
+    ]
+    active = [entry for entry in inputs if entry["isActive"]]
+    assert active == [
+        {
+            "value": "PS4",
+            "label": "PS4",
+            "icon": "gamepad-2",
+            "hoverText": "PlayStation 4",
+            "isActive": True,
+        }
+    ]
     assert ("Content-Type", "application/json") in captured.headers
 
 
@@ -124,7 +144,7 @@ def test_graphql_mutation_sets_input_and_returns_new_state() -> None:
 def test_graphql_route_surfaces_switch_communication_error() -> None:
     start_response, captured = _capturing_start_response()
 
-    request_body = json.dumps({"query": "{ currentInput }"}).encode("utf-8")
+    request_body = json.dumps({"query": "{ inputs { value } }"}).encode("utf-8")
     with patch(
         "homelab_hdmi_switch.schema.switch.get_current_input",
         side_effect=SwitchCommunicationError("device unreachable"),

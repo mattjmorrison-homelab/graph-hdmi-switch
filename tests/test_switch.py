@@ -22,7 +22,7 @@ def _mock_connection(response: bytes) -> Mock:
 def test_get_current_input_returns_current_port(
     mock_serial: Mock, mock_sleep: Mock
 ) -> None:
-    mock_serial.return_value = _mock_connection(b"\x00\x00\x00\x00\x03\x00\x00\x00")
+    mock_serial.return_value = _mock_connection(b"\x00\x00\x00\x00\x04\x00\x00\x00")
 
     result = get_current_input()
 
@@ -35,12 +35,12 @@ def test_get_current_input_returns_current_port(
 def test_set_input_sends_command_and_returns_new_port(
     mock_serial: Mock, mock_sleep: Mock
 ) -> None:
-    mock_serial.return_value = _mock_connection(b"\x00\x00\x00\x00\x01\x00\x00\x00")
+    mock_serial.return_value = _mock_connection(b"\x00\x00\x00\x00\x00\x00\x00\x00")
 
     result = set_input(HdmiInputPort.APPLE_TV)
 
     assert result == HdmiInputPort.APPLE_TV
-    mock_serial.return_value.write.assert_called_once_with(b"\xaa\xbb\x03\x01\x02\xee")
+    mock_serial.return_value.write.assert_called_once_with(b"\xaa\xbb\x03\x01\x01\xee")
 
 
 @patch("homelab_hdmi_switch.switch.time.sleep")
@@ -72,7 +72,7 @@ def test_get_current_input_accepts_shorter_than_full_frame_response(
 ) -> None:
     # Real devices have been observed sending 6 bytes instead of the
     # documented 8-byte frame. Only index 4 is ever read, so this is valid.
-    mock_serial.return_value = _mock_connection(b"\x00\x00\x00\x00\x03\x00")
+    mock_serial.return_value = _mock_connection(b"\x00\x00\x00\x00\x04\x00")
 
     result = get_current_input()
 

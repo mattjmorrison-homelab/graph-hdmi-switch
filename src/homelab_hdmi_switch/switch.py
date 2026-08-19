@@ -21,11 +21,19 @@ class SwitchCommunicationError(Exception):
 
 
 class HdmiInputPort(Enum):
-    GOOGLE_TV = 1
-    APPLE_TV = 2
-    PS3 = 3
-    PS4 = 4
-    SWITCH = 5
+    """The switch has 8 physical ports. Only 5 are currently wired to a
+    device — the rest are reserved for future use and excluded from the
+    `inputs` query, but still valid mutation targets if ever wired up.
+    """
+
+    APPLE_TV = 1
+    PC = 2
+    SWITCH = 3
+    PS3 = 4
+    PS4 = 5
+    UNUSED_6 = 6
+    UNUSED_7 = 7
+    UNUSED_8 = 8
 
 
 def _set_input_command(port: HdmiInputPort) -> bytes:
