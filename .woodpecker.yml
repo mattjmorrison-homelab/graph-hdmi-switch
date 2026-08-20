@@ -115,3 +115,14 @@ steps:
         "$DISCORD_WEBHOOK_URL"
     when:
       status: [failure]
+    # Shares the workspace volume, which is arm64-pinned (see the clone step
+    # above) — must match to mount it, same as verify-deploy.
+    backend_options:
+      kubernetes:
+        nodeSelector:
+          kubernetes.io/arch: arm64
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: pi
+            effect: NoSchedule
