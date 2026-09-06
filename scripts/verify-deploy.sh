@@ -1,8 +1,6 @@
 #!/bin/sh
 set -eu
 
-apk add --no-cache curl jq >/dev/null
-
 URL="https://graph-hdmi-switch.morrisons.site/version"
 
 # Argo CD Image Updater only polls the registry every ~2 minutes, plus sync
