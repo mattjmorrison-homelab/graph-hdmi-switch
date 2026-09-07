@@ -1,0 +1,25 @@
+name: Sync Discord webhook URL
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: k8s-amd64
+    steps:
+      - uses: mattjmorrison-homelab/actions-tofu/fetch-credentials@e1ce533934189c35f74475d3e257fc2321b1cad7 # main
+
+      - id: read
+        uses: mattjmorrison-homelab/actions-tofu/read-output@e1ce533934189c35f74475d3e257fc2321b1cad7 # main
+        with:
+          state-key: admin-discord/terraform.tfstate
+          output-name: webhook_urls
+          map-key: github-actions
+
+      - uses: mattjmorrison-homelab/actions-openbao/write-secret@0fe1624c376515aee139cc58ac8328d9921e21dd # main
+        with:
+          role: graph-hdmi-switch-discord
+          kv-path: homelab/graph-hdmi-switch/discord-webhook-url
+          value: ${{ steps.read.outputs.value }}
