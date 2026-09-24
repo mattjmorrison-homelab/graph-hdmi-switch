@@ -33,7 +33,7 @@ jobs:
           command: >-
             --context=git://github.com/mattjmorrison-homelab/graph-hdmi-switch.git#refs/heads/main
             --dockerfile=Dockerfile --skip-unused-stages=true --target=test --destination=registry.morrisons.site/graph-hdmi-switch-test:${{ github.sha }}
-          secret-volume: zot-pull-secret:/kaniko/.docker
+          secret-volume: graph-hdmi-switch-zot-pull-secret:/kaniko/.docker
           node-selector: kubernetes.io/arch=arm64
           tolerations: dedicated=pi:NoSchedule
           active-deadline-seconds: "1800"
@@ -57,7 +57,7 @@ jobs:
             --context=git://github.com/mattjmorrison-homelab/graph-hdmi-switch.git#refs/heads/main
             --dockerfile=Dockerfile --skip-unused-stages=true --target=release --build-arg=COMMIT_SHA=${{ github.sha }}
             --destination=registry.morrisons.site/graph-hdmi-switch:${{ github.sha }}
-          secret-volume: zot-pull-secret:/kaniko/.docker
+          secret-volume: graph-hdmi-switch-zot-pull-secret:/kaniko/.docker
           node-selector: kubernetes.io/arch=arm64
           tolerations: dedicated=pi:NoSchedule
           active-deadline-seconds: "1800"
