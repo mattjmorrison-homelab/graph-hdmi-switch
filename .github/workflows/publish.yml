@@ -21,7 +21,7 @@ jobs:
       - uses: mattjmorrison-homelab/actions-openbao/write-secret@0fe1624c376515aee139cc58ac8328d9921e21dd # main
         with:
           role: graph-hdmi-switch-discord
-          kv-path: homelab/graph-hdmi-switch/discord-webhook-url
+          kv-path: homelab/github-actions/graph-hdmi-switch/webhook-url
           value: ${{ steps.read_discord_webhook.outputs.value }}
 
       - name: Build and push the test-stage image
@@ -71,7 +71,7 @@ jobs:
         uses: mattjmorrison-homelab/actions-openbao@a9a15ee54f4b6a08b17ddd55df99d5109cfb5748 # main
         with:
           role: graph-hdmi-switch-discord
-          kv-path: homelab/graph-hdmi-switch/discord-webhook-url
+          kv-path: homelab/github-actions/graph-hdmi-switch/webhook-url
           output-name: DISCORD_WEBHOOK_URL
       - if: failure()
         run: >-
