@@ -1,0 +1,24 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: graph-hdmi-switch
+  annotations:
+    github.com/project-slug: mattjmorrison-homelab/graph-hdmi-switch
+spec:
+  type: service
+  owner: mattjmorrison-homelab
+  lifecycle: experimental
+  system: hdmi-switch
+  providesApis: [hdmi-switch-graphql]
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: hdmi-switch-graphql
+spec:
+  type: graphql
+  lifecycle: experimental
+  owner: mattjmorrison-homelab
+  system: hdmi-switch
+  definition:
+    $text: https://github.com/mattjmorrison-homelab/ui-hdmi-switch/blob/main/schema.graphql
