@@ -19,7 +19,7 @@ class Input:
 
 
 @strawberry.type
-class Query:
+class HdmiQuery:
     @strawberry.field
     def inputs(self) -> list[Input]:
         current = switch.get_current_input()
@@ -36,10 +36,24 @@ class Query:
 
 
 @strawberry.type
-class Mutation:
+class HdmiMutation:
     @strawberry.field
     def set_input(self, input: HdmiInput) -> HdmiInput:
         return switch.set_input(input)
+
+
+@strawberry.type
+class Query:
+    @strawberry.field
+    def hdmi(self) -> HdmiQuery:
+        return HdmiQuery()
+
+
+@strawberry.type
+class Mutation:
+    @strawberry.field
+    def hdmi(self) -> HdmiMutation:
+        return HdmiMutation()
 
 
 schema = strawberry.federation.Schema(query=Query, mutation=Mutation)
