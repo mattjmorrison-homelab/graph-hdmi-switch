@@ -93,7 +93,7 @@ def test_graphql_route_returns_inputs_query_result() -> None:
     start_response, captured = _capturing_start_response()
 
     request_body = json.dumps(
-        {"query": "{ inputs { value label icon hoverText isActive } }"}
+        {"query": "{ hdmi { inputs { value label icon hoverText isActive } } }"}
     ).encode("utf-8")
     with patch(
         "homelab_hdmi_switch.schema.switch.get_current_input",
@@ -103,7 +103,7 @@ def test_graphql_route_returns_inputs_query_result() -> None:
 
     assert captured.status == "200 OK"
     parsed = json.loads(b"".join(body))
-    inputs = parsed["data"]["inputs"]
+    inputs = parsed["data"]["hdmi"]["inputs"]
     assert [entry["value"] for entry in inputs] == [
         "APPLE_TV",
         "PC",
@@ -128,7 +128,7 @@ def test_graphql_mutation_sets_input_and_returns_new_state() -> None:
     start_response, captured = _capturing_start_response()
 
     request_body = json.dumps(
-        {"query": "mutation { setInput(input: APPLE_TV) }"}
+        {"query": "mutation { hdmi { setInput(input: APPLE_TV) } }"}
     ).encode("utf-8")
     with patch(
         "homelab_hdmi_switch.schema.switch.set_input",
@@ -137,14 +137,16 @@ def test_graphql_mutation_sets_input_and_returns_new_state() -> None:
         body = app(_graphql_environ(request_body), start_response)
 
     assert captured.status == "200 OK"
-    assert json.loads(b"".join(body)) == {"data": {"setInput": "APPLE_TV"}}
+    assert json.loads(b"".join(body)) == {"data": {"hdmi": {"setInput": "APPLE_TV"}}}
     mock_set_input.assert_called_once_with(HdmiInputPort.APPLE_TV)
 
 
 def test_graphql_route_surfaces_switch_communication_error() -> None:
     start_response, captured = _capturing_start_response()
 
-    request_body = json.dumps({"query": "{ inputs { value } }"}).encode("utf-8")
+    request_body = json.dumps(
+        {"query": "{ hdmi { inputs { value } } }"}
+    ).encode("utf-8")
     with patch(
         "homelab_hdmi_switch.schema.switch.get_current_input",
         side_effect=SwitchCommunicationError("device unreachable"),
