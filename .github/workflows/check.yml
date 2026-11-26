@@ -35,3 +35,26 @@ jobs:
           node-selector: kubernetes.io/arch=arm64
           tolerations: dedicated=pi:NoSchedule
           active-deadline-seconds: "1800"
+
+      - name: Build and push the test-stage image
+        uses: mattjmorrison-homelab/actions-k8s@955b466878ae777505b822bb6c241f4f4e6805b5 # main
+        with:
+          service-account: graph-hdmi-switch-job
+          image: gcr.io/kaniko-project/executor@sha256:4e7a52dd1f14872430652bb3b027405b8dfd17c4538751c620ac005741ef9698
+          shell: "false"
+          command: >-
+            --context=git://github.com/mattjmorrison-homelab/graph-hdmi-switch.git#refs/heads/${{ github.head_ref }}
+            --dockerfile=Dockerfile --skip-unused-stages=true --target=test --destination=registry.morrisons.site/graph-hdmi-switch-test:pr-${{ github.event.pull_request.head.sha }}
+          secret-volume: graph-hdmi-switch-zot-pull-secret:/kaniko/.docker
+          node-selector: kubernetes.io/arch=arm64
+          tolerations: dedicated=pi:NoSchedule
+          active-deadline-seconds: "1800"
+
+      - name: Run tests inside the just-built test image
+        uses: mattjmorrison-homelab/actions-k8s@955b466878ae777505b822bb6c241f4f4e6805b5 # main
+        with:
+          service-account: graph-hdmi-switch-job
+          image: registry.morrisons.site/graph-hdmi-switch-test:pr-${{ github.event.pull_request.head.sha }}
+          command: uv run pytest
+          node-selector: kubernetes.io/arch=arm64
+          tolerations: dedicated=pi:NoSchedule
